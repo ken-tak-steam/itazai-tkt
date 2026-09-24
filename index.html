@@ -158,7 +158,7 @@ function rotationAngles(p){
  return convertEuler(p.rot,true).map(v=>(v%360+360)%360);
 }
 function designDataOnly(value){const data={};for(const key of ['version','title','next','selected','kerf','parts','machiningOperations','references','reportReferences','reportViewAngles','reportViewZoom','coordinateSystem','extensions'])if(Object.hasOwn(value,key))data[key]=structuredClone(value[key]);return data}
-function designForSave(){const s=designDataOnly(state);s.format='itazai-design';s.schemaVersion=1;s.generator={id:'itazai-tkt',name:'板材設計_TKT',version:'4.81-TKT.5'};s.savedAt=new Date().toISOString();s.compatibility={coreSchemaVersion:1,geometry:'parts-snapshot',optionalFeatures:['machiningOperations','references','reportViewAngles','reportViewZoom','extensions'],featureVersions:{machiningOperations:1,references:1}};s.reportReferences=String(state.reportReferences||'');s.reportViewAngles=[...reportViewAngles()];s.reportViewZoom=reportViewZoom();s.coordinateSystem='right-handed-z-up';s.parts.forEach(p=>{p.pos=toZUp(p.pos);p.rot=rotationAngles(p)});(s.references||[]).forEach(p=>{p.pos=toZUp(p.pos);p.rot=convertEuler(p.rot,true)});return s}
+function designForSave(){const s=designDataOnly(state);s.format='itazai-design';s.schemaVersion=1;s.generator={id:'itazai-tkt',name:'板材設計_TKT',version:'4.81-TKT.6'};s.savedAt=new Date().toISOString();s.compatibility={coreSchemaVersion:1,geometry:'parts-snapshot',optionalFeatures:['machiningOperations','references','reportViewAngles','reportViewZoom','extensions'],featureVersions:{machiningOperations:1,references:1}};s.reportReferences=String(state.reportReferences||'');s.reportViewAngles=[...reportViewAngles()];s.reportViewZoom=reportViewZoom();s.coordinateSystem='right-handed-z-up';s.parts.forEach(p=>{p.pos=toZUp(p.pos);p.rot=rotationAngles(p)});(s.references||[]).forEach(p=>{p.pos=toZUp(p.pos);p.rot=convertEuler(p.rot,true)});return s}
 // Persistence contract: see JSON_COMPATIBILITY.md. Optional features cannot invalidate core geometry.
 function normalizeDesignExtras(s,featureVersions={}){
  const notes=[];
@@ -1249,9 +1249,9 @@ $('externalInfo').onclick=()=>{dialog(`<h2>外部通信・ライセンス</h2>
 <p>GitHub PagesのWeb版を開くときや再読み込みするときは、配信元に接続してHTMLを取得します。ダウンロードしたHTMLをローカルで使う場合、アプリから外部通信は行いません。下のライセンスリンクをクリックすると、外部サイトに接続します。</p>
 <p>設計データはブラウザー内に自動保存します。読み込んだ設計ファイルや作成した部品を、アプリから外部のサーバーへ送信する機能はありません。別の端末で続きを作る場合は、設計データをJSONで保存して移してください。</p>
 <p>学年・クラス・番号・氏名の入力欄と保存ファイル名は、JSON本文やブラウザーの自動保存には含めません。設計ファイルを開くと、これらの情報をファイル名から取得します。ファイル名と出力レポートには氏名等が含まれます。また、設計メモや部品名に自分で書いた情報は設計データに保存されます。</p>
-<p>印刷・PDF保存にはブラウザーの印刷機能を使います。保存先やプリンターは印刷画面で選んでください。</p>
+<p>PDFとPNG画像はブラウザー内で生成します。PDFはA4横です。iPadでは生成後の「共有・保存」から、PDFは「ファイルに保存」、画像は「画像を保存」を選んでください。共有先は利用者が選択します。自動で外部へ送信することはありません。</p>
 <h3>原作・ライセンス</h3>
-<p>原作者：川俣 純<br>原作：板材設計 V4.81<br>改変者：高倉　健太郎<br>改変版：板材設計_TKT（4.81-TKT.5）<br>改変日：2026年9月21日・22日</p>
+<p>原作者：川俣 純<br>原作：板材設計 V4.81<br>改変者：高倉　健太郎<br>改変版：板材設計_TKT（4.81-TKT.6）<br>改変日：2026年9月21日・22日・24日</p>
 <p>原作HTMLに記載された<a href="https://creativecommons.org/licenses/by/4.0/deed.ja" target="_blank" rel="noopener noreferrer">Creative Commons 表示 4.0 国際（CC BY 4.0）</a>を維持し、本改変版も同ライセンスで提供します。営利・非営利を問わず、利用・複製・改変・再配布できます。</p>
 <ul><li>原作者名「川俣 純」を表示する。</li><li>CC BY 4.0とライセンスへのリンクを示す。</li><li>改変した旨を表示し、従前の改変表示も保持する。</li><li>後続利用者の権利を妨げる追加的な制約を設けない。</li></ul>
 <p>無保証で提供します。第三者が持つ権利のすべてを許諾するものではありません。原作者が本改変版を制作・監修・推奨したことを示すものではありません。</p>
@@ -1262,9 +1262,9 @@ $('externalInfo').onclick=()=>{dialog(`<h2>外部通信・ライセンス</h2>
 <li>材料表示、使い方、初期データを更新。3D描画、接地・衝突判定、STL出力を15 mm／4 mmの板厚に対応。印刷の材料取り図を4枚に対応。</li>
 <li>直線・斜め切断のきりしろを3〜10 mm（1 mm刻み）に変更。新規作成時は3 mm、未加工の材料4枚、氏名・設計メモは空欄。保存済みの設計がある場合は復元。</li>
 <li>自動保存先、保存データの作成アプリ情報、HTMLダウンロード名を改変版用に変更。</li>
-<li>Step3に「材料取り図」「構想図」「設計メモ」「正投影図（第3角法）」のチェックボックスを追加。選択項目をA4横でページごとに印刷し、材料取り図の右上に配置済み部品の部品表を同じページで出力。</li>
-<li>「印刷・PDFで保存」からブラウザーの印刷画面でPDFを保存可能。項目の選択状態は設計JSONに保存。従来のPPTX出力は固定レイアウトで、チェックボックスの選択は印刷・PDFだけに適用。</li>
-<li>第3角法の平面図・正面図・右側面図を同じ縮尺と対応位置で表示。穴・加工輪郭・板厚・部品の回転と位置を反映し、仮置きの参考物は対象外。</li>
+<li>Step3に「材料取り図」「構想図」「正投影図（第3角法）」のチェックボックスを追加。選択項目をA4横でページごとに印刷し、材料取り図の右上に配置済み部品の部品表を同じページで出力。</li>
+<li>印刷画面を使わずA4横のPDFとPNG画像を生成。構想図の右側に設計メモを統合し、メモの独立チェックボックスを削除。項目の選択状態は設計JSONに保存。従来のPPTX出力は固定レイアウトで、チェックボックスの選択はPDF・画像に適用。</li>
+<li>第3角法の平面図・正面図・右側面図を同じ縮尺と対応位置で表示。水平な棚板の下面までの高さを、側板などの垂直な板の底辺を基準に寸法線・寸法補助線で表示。穴・加工輪郭・板厚・部品の回転と位置を反映し、仮置きの参考物は対象外。</li>
 <li>正投影図の寸法の単位、方向の補足、線の説明を省略。JIS B 0001の寸法記入方式に合わせ、細い実線の寸法線・寸法補助線、30度の塗りつぶし矢印、補助線の延長、縦の数値の向きを調整。全体幅・高さ・奥行きの重複記入を省略し、狭い箇所は矢印と数値を外側に配置。</li>
 <li>検索掲載を避けるnoindex/nofollowを追加。アクセス制限ではなく、URLが他の人に伝われば閲覧可能。GitHubのリポジトリページ自体の検索掲載を防ぐ設定ではありません。</li>
 <li>アプリ内に原作表示を保持し、改変者と変更内容を追記。</li>
@@ -1272,7 +1272,7 @@ $('externalInfo').onclick=()=>{dialog(`<h2>外部通信・ライセンス</h2>
 <h3>端末にダウンロード</h3>
 <p>このアプリはHTMLファイル1個で動作します。下のボタンで端末に保存できます。改変・再配布する場合は、上記の原作者・ライセンス・改変表示を保持してください。</p>
 <button id="downloadApp">端末にダウンロード</button>`);const actions=document.createElement('div');actions.style.cssText='display:flex;gap:10px;align-items:center;margin-top:12px';$('downloadApp').before(actions);actions.append($('downloadApp'),$('closeDialog'));$('dialogBody').scrollTop=0;$('downloadApp').onclick=()=>download(new Blob([appSource],{type:'text/html;charset=utf-8'}),'板材設計_TKT.html');};
-$('help').onclick=()=>{dialog("<h2>板材設計_TKT — 使い方</h2>\n<p>Designing with Wood Boards<br>板材を切り分け、3Dで組み立て、材料取り図と構想図をA4横にまとめる設計ツールです。HTMLファイルをブラウザーで開いて使えます。</p>\n<h3>材料</h3>\n<p>寸法は厚さ×幅×長さ（mm）です。パイン集成材：板材A 15×150×605（1枚）、板材B 15×130×270（2枚）。化粧合板：板材C 4×300×300（1枚）。Bの2枚はB1・B2として個別に加工できます。木目の向きを確かめながら設計します。</p>\n<h3>Step1　材料を切り分ける</h3>\n<ol><li>加工する板・部品を選びます。組み立てに配置済みの部品は、Step2で未配置にしてから加工します。</li><li>加工方法を選び、「この加工方法を選択する」を押します。</li><li>のこぎり切断では、切断方向を選択し、寸法と切りしろを指定して切断します。切りしろは3〜10 mm（1 mm刻み）です。</li></ol>\n<ul><li><strong>のこぎり切断：</strong>横・縦に加え、斜め切断を選べます。斜め切断は外周上の2点をクリックして指定し、3〜10 mm（1 mm刻み）の切りしろを取って両側を残します。2点を選び直すこともできます。点の寸法・座標を確認しながら指定でき、「材料図に戻る」で全体も確認できます。仕上がり線や端の丸をドラッグして寸法を調整できます。赤線が仕上がり位置、間の破線が切断位置の目安です。</li><li><strong>糸のこ盤切断：</strong>点を置いて輪郭を作成します。残す部分を指定して切断を確定します。</li><li><strong>自在ぎり切断：</strong>中心と直径を指定して円形に加工します。円の中心・円周をドラッグして位置や直径を調整できます。</li><li><strong>ベルトサンダー加工：</strong>角を選んで丸めます。半径Rは数値・スライダー・円弧のドラッグで調整できます。</li></ul>\n<h3>Step2　部品を配置する</h3>\n<p>部品一覧のクリックで「配置済み／未配置」を切り替えます。3D上の部品をクリックすると選択され、赤く表示されます。空白をクリックすると選択が解除されます。</p>\n<table><thead><tr><th>操作</th><th>動作</th></tr></thead><tbody>\n<tr><td>部品を左ドラッグ</td><td>床と平行に移動。近くの端にスナップします。</td></tr>\n<tr><td>Shift＋部品を左ドラッグ</td><td>Z方向（上下）に移動します。</td></tr>\n<tr><td>X・Y・Zキー</td><td>選択した部品を各軸の＋方向へ5 mm移動します。Shiftと同時に押すと−方向です。</td></tr>\n<tr><td>X回転・Y回転・Z回転</td><td>各軸まわりに90°ずつ回転します。角度欄で数値指定もできます。</td></tr>\n<tr><td>指定量だけ持ち上げる</td><td>1〜300 mmの整数で持ち上げます。初期値は選択した板の厚みに連動します。</td></tr>\n<tr><td>接地／Gキー</td><td>床または下にある部品に接する位置まで降ろします。</td></tr>\n<tr><td>空白を左ドラッグ／右ドラッグ</td><td>視点の回転／表示位置の移動。</td></tr>\n<tr><td>ホイール・拡大縮小スライダー</td><td>表示を拡大・縮小します。</td></tr>\n<tr><td>右上のキューブ／FIT</td><td>面・辺・角で視点を切り替え／配置した全体を画面に収めます。</td></tr>\n</tbody></table>\n<p>座標はZ軸が上向きです。部品や仮置き物と重なる移動を制限します。</p>\n<p><strong>仮置き：</strong>右側からCD・文庫・漫画・A4ファイル・A4ノート・サイズ指定の直方体を追加し、収納できるか確認できます。一覧で配置済み／未配置を切り替え、部品と同じ操作で移動・回転・接地できます。寸法は実物に合わせて変更できます。</p>\n<h3>Step3　設計の保存・構想図</h3>\n<p>学年・クラス・番号を0以外に選び、氏名を入力して、設計データをJSON形式で保存します。0のまま、または氏名が空白では保存できません。後から「設計を開く」で編集を再開できます。学年・クラス・番号・氏名はファイル名から取得し、JSON本文には保存しません。ファイル名の形式を変えた場合やブラウザーを再読み込みした場合は、設計ファイルを開き直すかStep3で入力してください。</p>\n<p>Shiftキーを押している間は保存ボタンが「PowerPointで出力」、Ctrlキーを押している間は「STLで出力」に切り替わります。配置した板材を、保存済みJSONと同じ名前のSTLに出力します。仮置き物はSTLに含まれません。レポートを作成する場合は、上部のStep3タブを選びます。</p>\n<h3>構想図とレポートの作成</h3>\n<p>「設計メモ（参考にしたもの等）」に、何のどのアイディアを参考にしたかを120文字以内で記入します。未入力で印刷・PowerPoint出力をしようとすると警告します。</p>\n<p>材料取り図を大きく配置し、構想図、設計メモ（参考にしたもの等）、学年・クラス・番号・氏名、作成日時をA4横にまとめます。印刷・PDFは選んだ項目ごとにページを分けます。</p>\n<ul><li>プレビューの構想図をドラッグすると向きを変更できます。Shiftキーは不要です。「構想図を標準の向き・大きさに戻す」で戻せます。</li><li>「設計を保存」をShiftキーを押しながら選ぶと従来のPPTXファイルを保存します。印刷項目の選択は印刷・PDFに適用されます。選んだ構想図の向きが反映されます。</li><li>PowerPointでは図は画像、設計メモ（参考にしたもの等）や氏名などは編集できる文字として出力します。</li></ul>\n<h3>加工ガイド</h3>\n<p>Step3の右隣の「加工ガイド」は、どの作業画面からも開けます。閉じると元の作業に戻ります。加工方法のボタンで該当箇所を色分けし、切断箇所数と仕上げ面数を確認できます。のこぎり切断の引き抜ける平面はかんながけ、凸のアールはベルトサンダー、凹のアールやくぼみの内側はやすりに分類します。糸のこ輪郭の直線はかんながけに含めません。記録のない加工方法は未判定から指定できます。</p>\n<h3>新規作成・履歴・自動保存</h3>\n<ul><li><strong>新規作成：</strong>確認後、現在の設計とブラウザー内の自動保存データを新しい設計に置き換えます。履歴も消えるため、残したい設計は先にJSONで保存してください。</li><li><strong>設計を開く：</strong>保存したJSONを読み込みます。未保存の変更がある場合は確認します。</li><li><strong>＜ 戻す ＞：</strong>「＜」と「戻す」で操作を取り消し、「＞」でやり直します。</li><li><strong>自動保存：</strong>設計はブラウザー内に保存されます。別の端末への移動や授業の続きには、JSONファイルを保存してください。</li></ul>\n<h3>動作環境・外部通信</h3>\n<p>CDN・外部ライブラリは使用していません。3D描画、JSON・PPTXの生成はHTML内で処理します。ローカルファイルとして使う場合、アプリから外部通信は行いません。Web公開版の取得やライセンスリンクを開く際には通信します。詳細は「外部通信・ライセンス」をご覧ください。</p>\n");$('dialogBody').scrollTop=0};
+$('help').onclick=()=>{dialog("<h2>板材設計_TKT — 使い方</h2>\n<p>Designing with Wood Boards<br>板材を切り分け、3Dで組み立て、材料取り図と構想図をA4横にまとめる設計ツールです。HTMLファイルをブラウザーで開いて使えます。</p>\n<h3>材料</h3>\n<p>寸法は厚さ×幅×長さ（mm）です。パイン集成材：板材A 15×150×605（1枚）、板材B 15×130×270（2枚）。化粧合板：板材C 4×300×300（1枚）。Bの2枚はB1・B2として個別に加工できます。木目の向きを確かめながら設計します。</p>\n<h3>Step1　材料を切り分ける</h3>\n<ol><li>加工する板・部品を選びます。組み立てに配置済みの部品は、Step2で未配置にしてから加工します。</li><li>加工方法を選び、「この加工方法を選択する」を押します。</li><li>のこぎり切断では、切断方向を選択し、寸法と切りしろを指定して切断します。切りしろは3〜10 mm（1 mm刻み）です。</li></ol>\n<ul><li><strong>のこぎり切断：</strong>横・縦に加え、斜め切断を選べます。斜め切断は外周上の2点をクリックして指定し、3〜10 mm（1 mm刻み）の切りしろを取って両側を残します。2点を選び直すこともできます。点の寸法・座標を確認しながら指定でき、「材料図に戻る」で全体も確認できます。仕上がり線や端の丸をドラッグして寸法を調整できます。赤線が仕上がり位置、間の破線が切断位置の目安です。</li><li><strong>糸のこ盤切断：</strong>点を置いて輪郭を作成します。残す部分を指定して切断を確定します。</li><li><strong>自在ぎり切断：</strong>中心と直径を指定して円形に加工します。円の中心・円周をドラッグして位置や直径を調整できます。</li><li><strong>ベルトサンダー加工：</strong>角を選んで丸めます。半径Rは数値・スライダー・円弧のドラッグで調整できます。</li></ul>\n<h3>Step2　部品を配置する</h3>\n<p>部品一覧のクリックで「配置済み／未配置」を切り替えます。3D上の部品をクリックすると選択され、赤く表示されます。空白をクリックすると選択が解除されます。</p>\n<table><thead><tr><th>操作</th><th>動作</th></tr></thead><tbody>\n<tr><td>部品を左ドラッグ</td><td>床と平行に移動。近くの端にスナップします。</td></tr>\n<tr><td>Shift＋部品を左ドラッグ</td><td>Z方向（上下）に移動します。</td></tr>\n<tr><td>X・Y・Zキー</td><td>選択した部品を各軸の＋方向へ5 mm移動します。Shiftと同時に押すと−方向です。</td></tr>\n<tr><td>X回転・Y回転・Z回転</td><td>各軸まわりに90°ずつ回転します。角度欄で数値指定もできます。</td></tr>\n<tr><td>指定量だけ持ち上げる</td><td>1〜300 mmの整数で持ち上げます。初期値は選択した板の厚みに連動します。</td></tr>\n<tr><td>接地／Gキー</td><td>床または下にある部品に接する位置まで降ろします。</td></tr>\n<tr><td>空白を左ドラッグ／右ドラッグ</td><td>視点の回転／表示位置の移動。</td></tr>\n<tr><td>ホイール・拡大縮小スライダー</td><td>表示を拡大・縮小します。</td></tr>\n<tr><td>右上のキューブ／FIT</td><td>面・辺・角で視点を切り替え／配置した全体を画面に収めます。</td></tr>\n</tbody></table>\n<p>座標はZ軸が上向きです。部品や仮置き物と重なる移動を制限します。</p>\n<p><strong>仮置き：</strong>右側からCD・文庫・漫画・A4ファイル・A4ノート・サイズ指定の直方体を追加し、収納できるか確認できます。一覧で配置済み／未配置を切り替え、部品と同じ操作で移動・回転・接地できます。寸法は実物に合わせて変更できます。</p>\n<h3>Step3　設計の保存・構想図</h3>\n<p>学年・クラス・番号を0以外に選び、氏名を入力して、設計データをJSON形式で保存します。0のまま、または氏名が空白では保存できません。後から「設計を開く」で編集を再開できます。学年・クラス・番号・氏名はファイル名から取得し、JSON本文には保存しません。ファイル名の形式を変えた場合やブラウザーを再読み込みした場合は、設計ファイルを開き直すかStep3で入力してください。</p>\n<p>Shiftキーを押している間は保存ボタンが「PowerPointで出力」、Ctrlキーを押している間は「STLで出力」に切り替わります。配置した板材を、保存済みJSONと同じ名前のSTLに出力します。仮置き物はSTLに含まれません。レポートを作成する場合は、上部のStep3タブを選びます。</p>\n<h3>構想図とレポートの作成</h3>\n<p>「設計メモ（参考にしたもの等）」に、何のどのアイディアを参考にしたかを120文字以内で記入します。設計メモは構想図の右側に表示します。空欄でもPDF・画像を保存できます。</p>\n<p>材料取り図を大きく配置し、構想図、設計メモ（参考にしたもの等）、学年・クラス・番号・氏名、作成日時をA4横にまとめます。PDF・画像は選んだ項目ごとにページを分けます。材料取り図と部品表、構想図と設計メモはそれぞれ同じページです。</p>\n<ul><li>プレビューの構想図をドラッグすると向きを変更できます。Shiftキーは不要です。「構想図を標準の向き・大きさに戻す」で戻せます。</li><li>「設計を保存」をShiftキーを押しながら選ぶと従来のPPTXファイルを保存します。項目の選択はPDF・画像に適用されます。選んだ構想図の向きが反映されます。</li><li>PowerPointでは図は画像、設計メモ（参考にしたもの等）や氏名などは編集できる文字として出力します。</li></ul>\n<h3>加工ガイド</h3>\n<p>Step3の右隣の「加工ガイド」は、どの作業画面からも開けます。閉じると元の作業に戻ります。加工方法のボタンで該当箇所を色分けし、切断箇所数と仕上げ面数を確認できます。のこぎり切断の引き抜ける平面はかんながけ、凸のアールはベルトサンダー、凹のアールやくぼみの内側はやすりに分類します。糸のこ輪郭の直線はかんながけに含めません。記録のない加工方法は未判定から指定できます。</p>\n<h3>新規作成・履歴・自動保存</h3>\n<ul><li><strong>新規作成：</strong>確認後、現在の設計とブラウザー内の自動保存データを新しい設計に置き換えます。履歴も消えるため、残したい設計は先にJSONで保存してください。</li><li><strong>設計を開く：</strong>保存したJSONを読み込みます。未保存の変更がある場合は確認します。</li><li><strong>＜ 戻す ＞：</strong>「＜」と「戻す」で操作を取り消し、「＞」でやり直します。</li><li><strong>自動保存：</strong>設計はブラウザー内に保存されます。別の端末への移動や授業の続きには、JSONファイルを保存してください。</li></ul>\n<h3>動作環境・外部通信</h3>\n<p>CDN・外部ライブラリは使用していません。3D描画、JSON・PPTXの生成はHTML内で処理します。ローカルファイルとして使う場合、アプリから外部通信は行いません。Web公開版の取得やライセンスリンクを開く際には通信します。詳細は「外部通信・ライセンス」をご覧ください。</p>\n");$('dialogBody').scrollTop=0};
 let activeStep=1;
 function setStep(step){if(step===2&&activeStep!==2){fixedScale=null;zoom=1}activeStep=step;document.querySelector('main').dataset.activeStep=String(step);for(let i of [1,2]){let area=$('step'+i);area.hidden=i!==step;area.classList.toggle('stepActive',i===step);$('goStep'+i).setAttribute('aria-pressed',String(i===step));}requestAnimationFrame(()=>{if(step===1){drawMaterials();shapeRefresh()}else resize()})}
 function showCutStage(which){document.querySelector('.materialStage').hidden=which!=='materials';document.querySelector('.editorStage').hidden=which!=='editor';$('backToMaterials').hidden=which!=='editor';$('editSelectedPart').hidden=which!=='materials'||(!cuttingMode()||cuttingMode()==='saw');requestAnimationFrame(()=>{drawMaterials();if(cuttingMode()!=='saw')drawShapeEditor()})}
@@ -3048,19 +3048,31 @@ setStep=function(step){
 .tktMaterialLayout{display:grid;grid-template-columns:minmax(0,1fr) 96mm;gap:4mm;align-items:start}.tktMaterialLayout .reportMaterials{height:166mm;min-width:0}.tktMaterialLayout .reportMaterials img{object-position:top left}.tktPartsPanel{width:96mm;transform-origin:top right}.tktPartsPanel h2{font-size:11pt;margin:0 0 1mm}.tktPartsPanel p{font-size:7pt;line-height:1.4;margin:0 0 2mm}.tktPartsPanel table{font-size:7pt}.tktPartsPanel th,.tktPartsPanel td{padding:.5mm;line-height:3.2mm}.tktPartsPanel td:first-child{font-size:7pt}.tktPartsPanel th:nth-child(1){width:16%}.tktPartsPanel th:nth-child(2){width:7%}.tktPartsPanel th:nth-child(3){width:17%}.tktPartsPanel th:nth-child(4),.tktPartsPanel th:nth-child(5){width:12%}.tktPartsPanel th:nth-child(6),.tktPartsPanel th:nth-child(7){width:8%}.tktPartsPanel th:nth-child(8){width:20%}
 </style>
 <script>/* 高倉 健太郎改変 2026-09-22：第3角法・選択式A4横印刷。外部通信なし。 */
-const tktChoices=[['materials','材料取り図'],['assembly','構想図'],['memo','設計メモ'],['ortho','正投影図（第3角法）']];
-function tktOptions(){return {materials:true,assembly:true,memo:true,ortho:true,...state.extensions?.tktReport};}
+const tktChoices=[['materials','材料取り図'],['assembly','構想図'],['ortho','正投影図（第3角法）']];
+function tktOptions(){return {materials:true,assembly:true,ortho:true,...state.extensions?.tktReport};}
 function tktPartRows(){return state.parts.filter(p=>p.used&&!p.cancelled).map(p=>({name:p.name,stock:p.stock,material:STOCK.find(s=>s.id===p.stock)?.material||'',length:n(p.w),width:n(p.h),thickness:n(partThickness(p)),quantity:1,note:p.outline||(p.holes||[]).length?'輪郭・穴加工あり':''}));}
 function tktPartCells(p){return [p.name,p.stock,p.material,p.length,p.width,p.thickness,p.quantity,p.note].map(String);}
 function tktPartsTable(rows){return '<table><thead><tr>'+['部品名','材料','材質','長さ','幅','厚さ','数量','備考'].map(v=>'<th>'+v+'</th>').join('')+'</tr></thead><tbody>'+rows.map(p=>'<tr>'+tktPartCells(p).map(v=>'<td>'+esc(v)+'</td>').join('')+'</tr>').join('')+(rows.length?'':'<tr><td colspan="8">配置済みの部品はありません。</td></tr>')+'</tbody></table>';}
 // Project world coordinates with a shared scale: front +Z, top +Y, right +X.
 // Front and top share X; front and right share Y. The right view runs back to the right.
+
+// Horizontal board lower faces measured from the bottom of upright support boards.
+function tktShelfHeights(parts){
+ const data=parts.map(p=>{const a=world(p,[0,0,0]),b=world(p,[0,1,0]);return {p,points:corners(p),vertical:Math.abs(b[1]-a[1])};});
+ const uprights=data.filter(d=>d.vertical<1e-5);if(!uprights.length)return [];
+ const base=uprights.flatMap(d=>d.points).sort((a,b)=>a[1]-b[1]||a[0]-b[0])[0],seen=new Set(),result=[];
+ for(const d of data.filter(d=>Math.abs(d.vertical-1)<1e-5)){
+  const anchor=d.points.slice().sort((a,b)=>a[1]-b[1]||a[0]-b[0])[0],height=n(anchor[1]-base[1]);
+  if(height<=0||seen.has(height))continue;seen.add(height);result.push({anchor,base,height});
+ }
+ return result.sort((a,b)=>a.height-b.height);
+}
 function tktOrthoSvg(){
  const parts=state.parts.filter(p=>p.used&&!p.cancelled),verts=parts.flatMap(corners);
  const W=1400,H=900;
  if(!verts.length)return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}"><rect width="100%" height="100%" fill="white"/><text x="700" y="450" text-anchor="middle" font-family="sans-serif" font-size="28">組み立てに部品を配置すると表示されます。</text></svg>`;
  const min=[0,1,2].map(i=>Math.min(...verts.map(v=>v[i]))),max=[0,1,2].map(i=>Math.max(...verts.map(v=>v[i]))),[w,h,d]=max.map((v,i)=>v-min[i]);
- const scale=Math.min(1050/Math.max(1,w+d),550/Math.max(1,h+d)),left=140,top=90,gap=140,frontY=top+d*scale+gap,rightX=left+w*scale+gap;
+ const shelfDims=tktShelfHeights(parts),left=140+shelfDims.length*45,scale=Math.min((1190-left)/Math.max(1,w+d),550/Math.max(1,h+d)),top=90,gap=140,frontY=top+d*scale+gap,rightX=left+w*scale+gap;
  const surfaces=[];
  for(const p of parts){let out=outline(p);if(signedArea(out)<0)out=[...out].reverse();const rings=[out,...(p.holes||[]).map(r=>signedArea(r)>0?[...r].reverse():r)],at=(v,y)=>world(p,[v[0]-p.w/2,y,v[1]-p.h/2]),t=partThickness(p)/2;
   surfaces.push(rings.map(r=>r.map(v=>at(v,t))),rings.map(r=>r.map(v=>at(v,-t))));
@@ -3102,8 +3114,13 @@ function tktOrthoSvg(){
    const left=projected.filter(v=>Math.abs(v[0]-ox)<1e-5).sort((a,b)=>b[1]-a[1])[0],right=projected.filter(v=>Math.abs(v[0]-(ox+vw*scale))<1e-5).sort((a,b)=>b[1]-a[1])[0],y=oy+vh*scale+offset;
    dimension([ox,y],[ox+vw*scale,y],left,right,vw);
   }
+  if(label==='正面図')shelfDims.forEach((item,index)=>{
+   const start=proj(item.anchor),base=proj(item.base),x=ox-offset-index*45;
+   body+='<g class="tkt-shelf-height" data-height="'+n(item.height)+'">';
+   dimension([x,oy+start[1]*scale],[x,oy+base[1]*scale],[ox+start[0]*scale,oy+start[1]*scale],[ox+base[0]*scale,oy+base[1]*scale],item.height,true);body+='</g>';
+  });
   if(dimensions.includes('height')){
-   const side=label==='正面図'?-1:1,x=side<0?ox-offset:ox+vw*scale+offset;
+   const side=label==='正面図'?-1:1,x=side<0?ox-offset-shelfDims.length*45:ox+vw*scale+offset;
    const edge=(arr)=>arr.sort((a,b)=>side*(b[0]-a[0]))[0];
    const upper=edge(projected.filter(v=>Math.abs(v[1]-oy)<1e-5)),lower=edge(projected.filter(v=>Math.abs(v[1]-(oy+vh*scale))<1e-5));
    dimension([x,oy],[x,oy+vh*scale],upper,lower,vh,true);
@@ -3115,16 +3132,16 @@ function tktOrthoSvg(){
  body+=txt(1050,45,'第3角法',28);
  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}">${body}</svg>`;
 }
-const tktSettings=document.createElement('fieldset');tktSettings.id='tktReportOptions';tktSettings.innerHTML='<legend>印刷・PDFに入れるもの</legend>'+tktChoices.map(([id,label])=>`<label><input type="checkbox" data-report="${id}"> ${label}</label>`).join('')+'<small>A4横。選んだ項目ごとにページを分けます。材料取り図の右上に部品表を同じページで表示します。</small>';
+const tktSettings=document.createElement('fieldset');tktSettings.id='tktReportOptions';tktSettings.innerHTML='<legend>PDF・画像に入れるもの</legend>'+tktChoices.map(([id,label])=>`<label><input type="checkbox" data-report="${id}"> ${label}</label>`).join('')+'<small>A4横。材料取り図には部品表、構想図には設計メモも入ります。</small>';
 const tktEditor=document.querySelector('.reportEditor');tktEditor.prepend(tktSettings);
-const tktPdfButton=document.createElement('button');tktPdfButton.id='pdfReport';tktPdfButton.className='primary';tktPdfButton.textContent='印刷・PDFで保存';tktSettings.after(tktPdfButton);
-const tktPdfHelp=document.createElement('small');tktPdfHelp.textContent='印刷画面で「PDFに保存」を選択。用紙：A4／横、倍率：100%、ヘッダーとフッター：オフ。MacはPDFメニューから保存できます。';tktPdfButton.after(tktPdfHelp);tktPdfHelp.after($('reportExportStatus'));
-const tktOrthoHelp=document.createElement('small');tktOrthoHelp.textContent='正投影図の正面はStep2の「正面」と同じ向きです。構想図を回しても正投影図の向きは変わりません。';tktSettings.append(tktOrthoHelp);
+const tktPdfButton=document.createElement('button');tktPdfButton.id='pdfReport';tktPdfButton.className='primary';tktPdfButton.textContent='PDFで保存';tktSettings.after(tktPdfButton);
+const tktPdfHelp=document.createElement('small');tktPdfHelp.textContent='PDFを作成後、「共有・保存」から「ファイルに保存」を選んでください。画像は共有メニューの「画像を保存」で写真に保存できます。';tktPdfButton.after(tktPdfHelp);tktPdfHelp.after($('reportExportStatus'));
+const tktOrthoHelp=document.createElement('small');tktOrthoHelp.textContent='棚板の高さは側板の底辺から棚板の下面までを表示します。正投影図の正面はStep2の「正面」と同じ向きです。構想図を回しても正投影図の向きは変わりません。';tktSettings.append(tktOrthoHelp);
 const tktPreview=document.createElement('div');tktPreview.id='tktSheets';paperSizer.after(tktPreview);paperSizer.style.display='none';
 const tktMaterialNode=$('reportMaterials'),tktAssemblyNode=document.querySelector('.reportAssembly'),tktMemoNode=$('reportReferenceText');
 function tktSheet(title,key){const el=document.createElement('article');el.className='tktSheet';el.dataset.section=key;el.innerHTML='<h1>'+esc(title)+'</h1><div class="tktSheetBody"></div><footer></footer>';return el;}
 const tktMaterialSheet=tktSheet('材料取り図','materials'),tktAssemblySheet=tktSheet('構想図','assembly'),tktMemoSheet=tktSheet('設計メモ','memo'),tktOrthoSheet=tktSheet('正投影図（第3角法）','ortho');
-tktMaterialSheet.querySelector('.tktSheetBody').append(tktMaterialNode);tktAssemblySheet.querySelector('.tktSheetBody').append(tktAssemblyNode);tktMemoSheet.querySelector('.tktSheetBody').append(tktMemoNode);
+tktMaterialSheet.querySelector('.tktSheetBody').append(tktMaterialNode);tktAssemblySheet.querySelector('.tktSheetBody').append(tktAssemblyNode);tktMemoSheet.querySelector('.tktSheetBody').append(tktMemoNode);const tktNotePanel=document.createElement('section');tktNotePanel.className='tktNotePanel';tktNotePanel.innerHTML='<h2>設計メモ</h2>';tktNotePanel.append(tktMemoNode);tktAssemblySheet.querySelector('.tktSheetBody').classList.add('tktAssemblyLayout');tktAssemblySheet.querySelector('.tktSheetBody').append(tktNotePanel);
 const tktPartsPanel=document.createElement('section');tktPartsPanel.className='tktPartsPanel';
 tktMaterialSheet.querySelector('.tktSheetBody').classList.add('tktMaterialLayout');
 tktMaterialSheet.querySelector('.tktSheetBody').append(tktPartsPanel);
@@ -3132,10 +3149,10 @@ function tktFitParts(){tktPartsPanel.style.zoom='1';const limit=166*96/25.4;if(t
 function tktRefreshSheets(){
  $('reportExportStatus').textContent='';const options=tktOptions();tktSettings.querySelectorAll('input').forEach(el=>el.checked=!!options[el.dataset.report]);
  const sheets=[];if(options.materials){tktPartsPanel.innerHTML='<h2>部品表</h2><p>配置済みの部品／単位：mm<br>長さ・幅は加工した形を囲む長方形の大きさ。</p>'+tktPartsTable(tktPartRows());sheets.push(tktMaterialSheet);}
- if(options.assembly)sheets.push(tktAssemblySheet);if(options.memo)sheets.push(tktMemoSheet);if(options.ortho){tktOrthoSheet.querySelector('.tktSheetBody').innerHTML=tktOrthoSvg();sheets.push(tktOrthoSheet);}
+ if(options.assembly)sheets.push(tktAssemblySheet);if(options.ortho){tktOrthoSheet.querySelector('.tktSheetBody').innerHTML=tktOrthoSvg();sheets.push(tktOrthoSheet);}
  // Keep unselected live nodes attached so the original rendering and editing functions still find their IDs.
  for(const el of [tktMaterialSheet,tktAssemblySheet,tktMemoSheet,tktOrthoSheet]){el.hidden=!sheets.includes(el);if(el.hidden)paper.append(el);}
- tktPreview.replaceChildren(...sheets);if(!sheets.length)tktPreview.innerHTML='<p>印刷する項目にチェックを入れてください。</p>';
+ tktPreview.replaceChildren(...sheets);if(!sheets.length)tktPreview.innerHTML='<p>保存する項目にチェックを入れてください。</p>';
  if(options.materials)tktFitParts();
  const info=reportInfo();sheets.forEach((el,i)=>el.querySelector('footer').textContent=`${info.grade}年 ${info.klass}組 ${info.number}番　${info.name}　｜　${i+1} / ${sheets.length}`);
  if(paperAutoFit)requestAnimationFrame(fitPaper);else setPaperScale(paperScale,false);
@@ -3145,12 +3162,70 @@ const tktOldBuildReportImages=buildReportImages;buildReportImages=function(){tkt
 tktSettings.onchange=()=>{checkpoint();state.extensions={...state.extensions,tktReport:Object.fromEntries([...tktSettings.querySelectorAll('input')].map(el=>[el.dataset.report,el.checked]))};persist();updateReport(false);};
 setPaperScale=function(value,auto=false){paperAutoFit=auto;paperScale=Math.max(.1,Math.min(2,value));tktPreview.style.zoom=paperScale;$('paperZoomRange').value=Math.round(paperScale*100);$('paperZoomLabel').textContent=Math.round(paperScale*100)+'%';};
 fitPaper=function(){if(activeStep!==4||!paperPreview.clientWidth)return;setPaperScale(Math.min((paperPreview.clientWidth-30)/(297*96/25.4),(paperPreview.clientHeight-24)/(210*96/25.4)),true);};
-readyReport=function(){const o=tktOptions();let error='';if(!tktChoices.some(([key])=>o[key]))error='印刷する項目を1つ以上選んでください。';else if(!validSaveIdentity(reportInfo()))error='学年・クラス・番号を選び、名前を入力してください。';else if(o.memo&&!String(state.reportReferences||'').trim())error='設計メモを入力するか、設計メモのチェックを外してください。';else if(o.memo&&String(state.reportReferences||'').length>120)error='設計メモは120文字以内にしてください。';$('reportExportStatus').textContent=error;return !error;};
+readyReport=function(){const o=tktOptions();let error='';if(!tktChoices.some(([key])=>o[key]))error='保存する項目を1つ以上選んでください。';else if(!validSaveIdentity(reportInfo()))error='学年・クラス・番号を選び、名前を入力してください。';else if(o.assembly&&String(state.reportReferences||'').length>120)error='設計メモは120文字以内にしてください。';$('reportExportStatus').textContent=error;return !error;};
 function tktPreparePrint(){buildReportImages();updateReport();reportPrint.replaceChildren(...[...tktPreview.querySelectorAll('.tktSheet')].map(el=>{const copy=el.cloneNode(true);copy.querySelectorAll('[id]').forEach(e=>e.removeAttribute('id'));return copy;}));}
 let tktPrintingPrepared=false;
-tktPdfButton.onclick=async()=>{if(!readyReport())return;tktPdfButton.disabled=true;try{tktPreparePrint();await Promise.all([...reportPrint.querySelectorAll('img')].map(img=>img.decode()));await document.fonts.ready;tktPrintingPrepared=true;window.print();}catch(e){$('reportExportStatus').textContent='印刷画面を開けませんでした：'+e.message;}finally{tktPdfButton.disabled=false;tktPrintingPrepared=false;}};
+
 window.addEventListener('beforeprint',()=>{if(activeStep===4&&!tktPrintingPrepared)tktPreparePrint();});
-$('goStep4').title='設計JSONの保存、選択式A4横印刷、PDF保存、正投影図';
+$('goStep4').title='設計JSON、A4横PDF、画像の保存、正投影図';
 tktRefreshSheets();
+</script>
+<style>.tktAssemblyLayout{display:grid;grid-template-columns:minmax(0,1fr) 76mm;gap:5mm}.tktNotePanel h2{font-size:12pt;margin:0 0 3mm}.tktNotePanel .reportReferences{font-size:11pt!important;line-height:1.8;background:none}.tktExportPreview{max-width:100%;height:auto;border:1px solid #ccc}</style>
+<script>
+// Local canvas export: no print dialog, CDN, upload, or foreignObject rendering.
+const tktImageButton=document.createElement('button');tktImageButton.id='imageReport';tktImageButton.textContent='画像を保存';tktPdfButton.after(tktImageButton);
+function tktWrap(g,text,width){const lines=[];for(const paragraph of String(text).split('\n')){let line='';for(const ch of paragraph){if(line&&g.measureText(line+ch).width>width){lines.push(line);line='';}line+=ch;}lines.push(line);}return lines;}
+async function tktLoadImage(src){const image=new Image();image.src=src;await image.decode();return image;}
+function tktContain(g,img,x,y,w,h){const k=Math.min(w/img.width,h/img.height);g.drawImage(img,x+(w-img.width*k)/2,y+(h-img.height*k)/2,img.width*k,img.height*k);}
+function tktCanvasBlob(canvas,type='image/png'){return new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(Error('画像を生成できませんでした。')),type,.96));}
+async function tktExportPages(){
+ buildReportImages();updateReport();await document.fonts.ready;
+ const sections=[...tktPreview.querySelectorAll('.tktSheet')],pages=[];
+ for(const [index,sheet]of sections.entries()){
+  const canvas=document.createElement('canvas');canvas.width=2376;canvas.height=1680;const g=canvas.getContext('2d');g.scale(8,8);g.fillStyle='white';g.fillRect(0,0,297,210);g.fillStyle='#263c34';g.font='bold 6.5px sans-serif';g.fillText(sheet.querySelector('h1').textContent,10,17);
+  const key=sheet.dataset.section;
+  if(key==='materials'){
+   const img=await tktLoadImage(tktMaterialNode.querySelector('img').src);tktContain(g,img,10,25,177,160);
+   g.font='bold 4px sans-serif';g.fillText('部品表',191,28);g.font='2.5px sans-serif';g.fillText('配置済みの部品／単位：mm',191,33);g.fillText('長さ・幅は加工した形を囲む長方形の大きさ',191,37);
+   const rows=[['部品名','材料','材質','長さ','幅','厚さ','数量','備考'],...tktPartRows().map(tktPartCells)];
+   if(rows.length===1)rows.push(['配置なし','','','','','','','']);
+   const widths=[15.36,6.72,16.32,11.52,11.52,7.68,7.68,19.2];g.font='2.4px sans-serif';
+   const wrapped=rows.map(row=>row.map((text,i)=>tktWrap(g,text,widths[i]-1))),heights=wrapped.map(row=>Math.max(...row.map(lines=>lines.length))*3.2+1.2),scale=Math.min(1,145/heights.reduce((a,b)=>a+b,0));
+   g.save();g.translate(191,40);g.scale(1,scale);let y=0;wrapped.forEach((row,j)=>{let x=0;row.forEach((lines,i)=>{g.fillStyle=j?'white':'#e8f0ea';g.fillRect(x,y,widths[i],heights[j]);g.strokeStyle='#889a8e';g.lineWidth=.2;g.strokeRect(x,y,widths[i],heights[j]);g.fillStyle='#263c34';lines.forEach((line,n)=>g.fillText(line,x+.5,y+3+n*3.2));x+=widths[i];});y+=heights[j];});g.restore();
+  }else if(key==='assembly'){
+   const img=await tktLoadImage(tktAssemblyNode.querySelector('img').src);tktContain(g,img,10,25,196,160);g.font='bold 4.2px sans-serif';g.fillText('設計メモ',211,29);g.font='3.8px sans-serif';tktWrap(g,state.reportReferences||'',76).forEach((line,i)=>g.fillText(line,211,38+i*6.8));
+  }else if(key==='ortho'){
+   const svg=tktOrthoSvg().replace('<svg ','<svg width="1400" height="900" '),url=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));try{const img=await tktLoadImage(url);tktContain(g,img,10,24,277,166);}finally{URL.revokeObjectURL(url);}
+  }
+  g.strokeStyle='#aaa';g.lineWidth=.2;g.beginPath();g.moveTo(10,195);g.lineTo(287,195);g.stroke();g.fillStyle='#263c34';g.font='3.5px sans-serif';const info=reportInfo();g.fillText(`${info.grade}年 ${info.klass}組 ${info.number}番　${info.name}　｜　${index+1} / ${sections.length}`,10,201);pages.push({canvas,title:sheet.querySelector('h1').textContent});
+ }
+ return pages;
+}
+async function tktPdfBlob(pages){
+ const enc=new TextEncoder(),objects=[null],bytes=s=>enc.encode(s),add=value=>(objects.push(value),objects.length-1),join=chunks=>{const out=new Uint8Array(chunks.reduce((n,c)=>n+c.length,0));let offset=0;for(const c of chunks){out.set(c,offset);offset+=c.length;}return out;};
+ const catalog=add(null),tree=add(null),kids=[];
+ for(const {canvas}of pages){const jpeg=new Uint8Array(await (await tktCanvasBlob(canvas,'image/jpeg')).arrayBuffer()),image=add(join([bytes(`<< /Type /XObject /Subtype /Image /Width ${canvas.width} /Height ${canvas.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpeg.length} >>\nstream\n`),jpeg,bytes('\nendstream')]));const command=bytes('q 841.889764 0 0 595.275591 0 0 cm /Im0 Do Q');const content=add(join([bytes(`<< /Length ${command.length} >>\nstream\n`),command,bytes('\nendstream')]));kids.push(add(bytes(`<< /Type /Page /Parent ${tree} 0 R /MediaBox [0 0 841.889764 595.275591] /Resources << /XObject << /Im0 ${image} 0 R >> >> /Contents ${content} 0 R >>`)));}
+ objects[catalog]=bytes(`<< /Type /Catalog /Pages ${tree} 0 R >>`);objects[tree]=bytes(`<< /Type /Pages /Count ${kids.length} /Kids [${kids.map(i=>i+' 0 R').join(' ')}] >>`);
+ const chunks=[bytes('%PDF-1.4\n')],offsets=[0];let length=chunks[0].length;for(let i=1;i<objects.length;i++){offsets.push(length);const chunk=join([bytes(`${i} 0 obj\n`),objects[i],bytes('\nendobj\n')]);chunks.push(chunk);length+=chunk.length;}const xref=length;chunks.push(bytes(`xref\n0 ${objects.length}\n0000000000 65535 f \n`+offsets.slice(1).map(v=>String(v).padStart(10,'0')+' 00000 n \n').join('')+`trailer\n<< /Size ${objects.length} /Root ${catalog} 0 R >>\nstartxref\n${xref}\n%%EOF`));return new Blob(chunks,{type:'application/pdf'});
+}
+let tktExportUrls=[];
+function tktClearExportUrls(){tktExportUrls.forEach(url=>URL.revokeObjectURL(url));tktExportUrls=[];}
+async function tktSaveExport(images){
+ if(!readyReport())return;tktPdfButton.disabled=tktImageButton.disabled=true;$('reportExportStatus').textContent=images?'画像を作成しています…':'PDFを作成しています…';
+ try{
+  const pages=await tktExportPages(),base='板材設計_TKT_'+(reportInfo().name||'設計'),files=[];
+  if(images){for(const [i,page]of pages.entries())files.push(new File([await tktCanvasBlob(page.canvas)],`${base}_${i+1}_${page.title}.png`,{type:'image/png'}));}else files.push(new File([await tktPdfBlob(pages)],base+'.pdf',{type:'application/pdf'}));
+  tktClearExportUrls();dialog('<h2>'+ (images?'画像を保存':'PDFで保存')+'</h2><p>'+(images?'下の「共有・保存」を押し、共有メニューで「画像を保存」を選ぶと写真に保存できます。':'下の「共有・保存」を押し、共有メニューで「ファイルに保存」を選んでください。')+'</p><div id="tktExportFiles"></div><p id="tktExportMessage" role="status"></p>');
+  const host=$('tktExportFiles');for(const file of files){const row=document.createElement('div');row.style.margin='12px 0';const label=document.createElement('p');label.textContent=file.name;row.append(label);const url=URL.createObjectURL(file);tktExportUrls.push(url);
+   if(navigator.canShare?.({files:[file]})){const button=document.createElement('button');button.textContent='共有・保存';button.className='primary';button.onclick=async()=>{try{await navigator.share({files:[file]});}catch(e){if(e.name!=='AbortError')$('tktExportMessage').textContent='共有できませんでした。下のリンクから開いて保存してください。';}};row.append(button);}
+   const link=document.createElement('a');link.href=url;link.download=file.name;link.textContent=images?'画像ファイルを保存':'PDFファイルを保存';link.style.marginLeft='12px';row.append(link);const open=document.createElement('a');open.href=url;open.target='_blank';open.rel='noopener';open.textContent='開く';open.style.marginLeft='12px';row.append(open);
+   if(images){const img=new Image();img.src=url;img.className='tktExportPreview';img.alt=file.name;row.append(img);}host.append(row);
+  }$('reportExportStatus').textContent='作成しました。保存先を選んでください。';
+ }catch(e){$('reportExportStatus').textContent='作成できませんでした：'+e.message;}finally{tktPdfButton.disabled=tktImageButton.disabled=false;}
+}
+tktPdfButton.onclick=()=>tktSaveExport(false);tktImageButton.onclick=()=>tktSaveExport(true);
+// Keep generated file URLs alive until the next export so iPad previews can save them.
+tktRefreshSheets();
+
 </script>
 </body></html>
