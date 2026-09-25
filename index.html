@@ -1816,7 +1816,7 @@ materialScrollStage.addEventListener('click',e=>{if(materialScrollSuppressClick)
 const paperPreview=document.querySelector('.reportPreview'),paper=$('reportPaper'),paperPanel=document.createElement('div'),paperToolbar=document.createElement('div'),paperSizer=document.createElement('div');
 paperPanel.className='paperPanel';paperPreview.before(paperPanel);paperToolbar.className='paperToolbar';paperToolbar.innerHTML='<button id="paperZoomOut" aria-label="用紙を縮小">−</button><input id="paperZoomRange" aria-label="用紙の表示倍率" type="range" min="10" max="200" value="100"><output id="paperZoomLabel">100%</output><button id="paperZoomIn" aria-label="用紙を拡大">＋</button><button id="paperFit">全体を表示</button>';
 paperPanel.append(paperPreview,paperToolbar);paperToolbar.append($('paperFit'),$('paperZoomIn'),$('paperZoomRange'),$('paperZoomOut'),$('paperZoomLabel'));$('paperZoomRange').setAttribute('aria-orientation','vertical');paperSizer.className='paperSizer';paper.before(paperSizer);paperSizer.append(paper);
-const paperStyle=document.createElement('style');paperStyle.textContent='.paperPanel{position:sticky;top:0;min-width:0;height:calc(100vh - 200px);min-height:260px;display:flex;flex-direction:row;gap:8px}.paperToolbar{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:7px;flex:0 0 64px;padding:8px 0;overflow-y:auto}.paperToolbar button{padding:4px 9px;flex-shrink:0}.paperToolbar #paperFit{width:64px;padding:6px;white-space:normal;line-height:1.4}.paperToolbar input{writing-mode:vertical-lr;direction:rtl;min-width:0;width:24px;height:clamp(70px,22vh,200px);flex-shrink:1;min-height:50px;padding:0}.paperToolbar output{font-size:12px;flex-shrink:0}.paperPanel .reportPreview{flex:1;min-width:0;min-height:0;padding:8px;overflow:auto;touch-action:none}.paperSizer{position:relative;margin:0 auto}.paperSizer .reportPaper{position:absolute;left:0;top:0;transform-origin:top left}@media print{#reportPrint .reportPaper{transform:none!important}}';document.head.append(paperStyle);
+const paperStyle=document.createElement('style');paperStyle.textContent='.paperPanel{position:sticky;top:0;min-width:0;height:calc(100vh - 200px);min-height:260px;display:flex;flex-direction:row;gap:8px}.paperToolbar{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:7px;flex:0 0 64px;padding:8px 0;overflow-y:auto}.paperToolbar button{padding:4px 9px;flex-shrink:0}.paperToolbar #paperFit{width:64px;padding:6px;white-space:normal;line-height:1.4}.paperToolbar input{writing-mode:vertical-lr;direction:rtl;min-width:0;width:24px;height:clamp(70px,22vh,200px);flex-shrink:1;min-height:50px;padding:0}.paperToolbar output{font-size:12px;flex-shrink:0}.paperPanel .reportPreview{flex:1;min-width:0;min-height:0;padding:8px;overflow:auto;touch-action:pan-y;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}.paperSizer{position:relative;margin:0 auto}.paperSizer .reportPaper{position:absolute;left:0;top:0;transform-origin:top left}@media print{#reportPrint .reportPaper{transform:none!important}}';document.head.append(paperStyle);
 let paperScale=1,paperAutoFit=true;
 function setPaperScale(value,auto=false){paperAutoFit=auto;paperScale=Math.max(.1,Math.min(2,value));paper.style.transform='scale('+paperScale+')';paperSizer.style.width=paper.offsetWidth*paperScale+'px';paperSizer.style.height=paper.offsetHeight*paperScale+'px';$('paperZoomRange').value=Math.round(paperScale*100);$('paperZoomLabel').textContent=Math.round(paperScale*100)+'%'}
 function fitPaper(){if(activeStep!==4||!paperPreview.clientWidth)return;setPaperScale(Math.min((paperPreview.clientWidth-20)/paper.offsetWidth,(paperPreview.clientHeight-20)/paper.offsetHeight),true);paperPreview.scrollTop=paperPreview.scrollLeft=0}
@@ -3253,5 +3253,38 @@ const tktHeightStatus=document.createElement('p');tktHeightStatus.id='tktHeightS
 const tktHeightAvailability=syncTransformAvailability;
 syncTransformAvailability=function(){tktHeightAvailability();const p=refSelected()||(!assemblySelectionCleared&&selected()?.used?selected():null);if(p)syncLiftDefault(p);};
 const tktResponsiveObserver=new ResizeObserver(()=>{if(activeStep===4)requestAnimationFrame(()=>fitPaper());});tktResponsiveObserver.observe(document.querySelector('.reportPreview'));
+// The report is scrollable by touch; turn on one-finger rotation only when requested.
+let tktTouchRotation=false;
+const tktRotateButton=document.createElement('button');
+tktRotateButton.id='tktTouchRotation';tktRotateButton.type='button';tktRotateButton.textContent='構想図を指で回す';
+tktRotateButton.setAttribute('aria-pressed','false');
+reportRotationHint.after(tktRotateButton);
+function tktSyncTouchRotation(){
+ reportRotationImage.style.touchAction=tktTouchRotation?'none':'pan-y';
+ tktRotateButton.textContent=tktTouchRotation?'スクロールに戻す':'構想図を指で回す';
+ tktRotateButton.setAttribute('aria-pressed',String(tktTouchRotation));
+}
+tktRotateButton.onclick=()=>{tktTouchRotation=!tktTouchRotation;tktSyncTouchRotation();};
+const tktRotationDown=reportRotationImage.onpointerdown;
+reportRotationImage.onpointerdown=e=>{if(e.pointerType==='touch'&&!tktTouchRotation)return;tktRotationDown(e);};
+tktSyncTouchRotation();
+// Page buttons remain available even when the preview is magnified.
+const tktPageButtons=document.createElement('div');
+tktPageButtons.id='tktPageButtons';tktPageButtons.setAttribute('role','group');
+tktPageButtons.setAttribute('aria-label','印刷ページへ移動');
+for(const [key,label] of [['materials','材料取り図'],['assembly','構想図'],['ortho','正投影図']]){
+ const button=document.createElement('button');button.type='button';button.textContent=label;button.title=label+'へ移動';
+ button.onclick=()=>{
+  const sheet=tktPreview.querySelector('.tktSheet[data-section="'+key+'"]');
+  if(!sheet)return;
+  const top=sheet.getBoundingClientRect().top-paperPreview.getBoundingClientRect().top+paperPreview.scrollTop-44;
+  paperPreview.scrollTo({top,behavior:'smooth'});
+ };
+ tktPageButtons.append(button);
+}
+paperPreview.prepend(tktPageButtons);
+const tktPageStyle=document.createElement('style');
+tktPageStyle.textContent='#tktPageButtons{position:sticky;z-index:3;top:0;display:flex;flex-wrap:wrap;gap:4px;width:max-content;max-width:100%;padding:4px 5px;background:#fffffff0;border-radius:6px}#tktPageButtons button{font-size:12px;padding:5px 7px;background:#fff;box-shadow:0 1px 4px #243e292b}@media (max-width:900px){#tktPageButtons button{font-size:11px;padding:4px 5px}}';
+document.head.append(tktPageStyle);
 </script>
 </body></html>
